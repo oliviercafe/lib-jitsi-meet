@@ -227,7 +227,7 @@ function getConstraints(um, options = {}) {
         if (browser.isReactNative()) {
             // The react-native-webrtc project that we're currently using
             // expects the audio constraint to be a boolean.
-            constraints.audio = true;
+            constraints.audio = false; // ocafe : true
         } else if (browser.isFirefox()) {
             if (options.micDeviceId) {
                 constraints.audio = {
@@ -237,7 +237,7 @@ function getConstraints(um, options = {}) {
                         sourceId: options.micDeviceId // old style
                     } ] };
             } else {
-                constraints.audio = true;
+                constraints.audio = false; // ocafe : true
             }
         } else {
             // same behaviour as true
