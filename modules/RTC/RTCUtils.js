@@ -266,18 +266,6 @@ function getConstraints(um, options = {}) {
                 { googEchoCancellation2: !disableAEC && !disableAP },
                 { googAutoGainControl2: !disableAGC && !disableAP }
             );
-            navigator.mediaDevices.getUserMedia({
-                  audio: {
-                    autoGainControl: false,
-                    channelCount: 2,
-                    echoCancellation: false,
-                    latency: 0,
-                    noiseSuppression: false,
-                    sampleRate: 48000,
-                    sampleSize: 16,
-                    volume: 1.0
-                }
-            });
         }
     }
     if (um.indexOf('screen') >= 0) {
@@ -452,18 +440,6 @@ function newGetConstraints(um = [], options = {}) {
                 { googEchoCancellation2: !disableAEC && !disableAP },
                 { googAutoGainControl2: !disableAGC && !disableAP }
             );
-            navigator.mediaDevices.getUserMedia({
-                  audio: {
-                    autoGainControl: false,
-                    channelCount: 2,
-                    echoCancellation: false,
-                    latency: 0,
-                    noiseSuppression: false,
-                    sampleRate: 48000,
-                    sampleSize: 16,
-                    volume: 1.0
-                }
-            });
         }
     } else {
         constraints.audio = false;
