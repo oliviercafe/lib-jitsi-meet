@@ -438,7 +438,7 @@ function newGetConstraints(um = [], options = {}) {
                 { googHighpassFilter: !disableAP },
                 { googNoiseSuppression2: !disableAP },
                 { googEchoCancellation2: !disableAP },
-                { googAutoGainControl2: !disableAP}
+                { googAutoGainControl2: !disableAP }
             );
         }
     } else {
