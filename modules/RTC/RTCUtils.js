@@ -257,14 +257,14 @@ function getConstraints(um, options = {}) {
 
             // if it is good enough for hangouts...
             constraints.audio.optional.push(
-                { echoCancellation: !disableAEC && !disableAP },
-                { googEchoCancellation: !disableAEC && !disableAP },
-                { googAutoGainControl: !disableAGC && !disableAP },
-                { googNoiseSuppression: !disableNS && !disableAP },
-                { googHighpassFilter: !disableHPF && !disableAP },
-                { googNoiseSuppression2: !disableNS && !disableAP },
-                { googEchoCancellation2: !disableAEC && !disableAP },
-                { googAutoGainControl2: !disableAGC && !disableAP }
+                { echoCancellation: false/*!disableAEC && !disableAP*/ },
+                { googEchoCancellation: false/*!disableAEC && !disableAP*/ },
+                { googAutoGainControl: false/*!disableAGC && !disableAP*/ },
+                { googNoiseSuppression: false/*!disableNS && !disableAP*/ },
+                { googHighpassFilter: false/*!disableHPF && !disableAP*/ },
+                { googNoiseSuppression2: false/*!disableNS && !disableAP*/ },
+                { googEchoCancellation2: false/*!disableAEC && !disableAP*/ },
+                { googAutoGainControl2: false/*!disableAGC && !disableAP*/ }
             );
         }
     }
@@ -415,9 +415,9 @@ function newGetConstraints(um = [], options = {}) {
         if (browser.isFirefox() || browser.isWebKitBased()) {
             constraints.audio = {
                 deviceId: options.micDeviceId,
-                autoGainControl: !disableAGC && !disableAP,
-                echoCancellation: !disableAEC && !disableAP,
-                noiseSuppression: !disableNS && !disableAP
+                autoGainControl: false /*!disableAGC && !disableAP*/,
+                echoCancellation: false/*!disableAEC && !disableAP*/,
+                noiseSuppression: false/*!disableNS && !disableAP*/
             };
         } else {
             // NOTE(brian): the new-style ('advanced' instead of 'optional')
@@ -431,14 +431,14 @@ function newGetConstraints(um = [], options = {}) {
             }
             constraints.audio.optional.push(
                 { sourceId: options.micDeviceId },
-                { echoCancellation: !disableAEC && !disableAP },
-                { googEchoCancellation: !disableAEC && !disableAP },
-                { googAutoGainControl: !disableAGC && !disableAP },
-                { googNoiseSuppression: !disableNS && !disableAP },
-                { googHighpassFilter: !disableHPF && !disableAP },
-                { googNoiseSuppression2: !disableNS && !disableAP },
-                { googEchoCancellation2: !disableAEC && !disableAP },
-                { googAutoGainControl2: !disableAGC && !disableAP }
+                { echoCancellation: false/*!disableAEC && !disableAP*/ },
+                { googEchoCancellation: false/*!disableAEC && !disableAP*/ },
+                { googAutoGainControl: false/*!disableAGC && !disableAP*/ },
+                { googNoiseSuppression: false/*!disableNS && !disableAP*/ },
+                { googHighpassFilter: false/*!disableHPF && !disableAP*/ },
+                { googNoiseSuppression2: false/*!disableNS && !disableAP*/ },
+                { googEchoCancellation2: false/*!disableAEC && !disableAP*/ },
+                { googAutoGainControl2: false/*!disableAGC && !disableAP*/ }
             );
         }
     } else {
