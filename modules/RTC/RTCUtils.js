@@ -82,16 +82,16 @@ let audioOutputChanged = false;
 let disableAP = true;
 
 // Disables Acoustic Echo Cancellation
-let disableAEC = true;
+let disableAEC = false;
 
 // Disables Noise Suppression
-let disableNS = true;
+let disableNS = false;
 
 // Disables Automatic Gain Control
-let disableAGC = true;
+let disableAGC = false;
 
 // Disables Highpass Filter
-let disableHPF = true;
+let disableHPF = false;
 
 const featureDetectionAudioEl = document.createElement('audio');
 const isAudioOutputDeviceChangeAvailable
