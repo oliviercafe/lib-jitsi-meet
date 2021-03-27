@@ -269,14 +269,14 @@ function getConstraints(um, options = {}) {
 
             // if it is good enough for hangouts...
             constraints.audio.optional.push(
-                { echoCancellation: !disableAP },
-                { googEchoCancellation: !disableAP },
-                { googAutoGainControl: !disableAP },
-                { googNoiseSuppression: !disableAP },
-                { googHighpassFilter: !disableAP },
-                { googNoiseSuppression2: !disableAP },
-                { googEchoCancellation2: !disableAP },
-                { googAutoGainControl2: !disableAP }
+                { echoCancellation: false },
+                { googEchoCancellation: false },
+                { googAutoGainControl: false },
+                { googNoiseSuppression: false },
+                { googHighpassFilter: false },
+                { googNoiseSuppression2: false },
+                { googEchoCancellation2: false },
+                { googAutoGainControl2: false }
             );
         }
     }
@@ -427,9 +427,9 @@ function newGetConstraints(um = [], options = {}) {
         if (browser.isFirefox() || browser.isWebKitBased()) {
             constraints.audio = {
                 deviceId: options.micDeviceId,
-                autoGainControl: !disableAP,
-                echoCancellation: !disableAP,
-                noiseSuppression: !disableAP
+                autoGainControl: false,
+                echoCancellation: false,
+                noiseSuppression: false
             };
         } else {
             // NOTE(brian): the new-style ('advanced' instead of 'optional')
@@ -443,14 +443,14 @@ function newGetConstraints(um = [], options = {}) {
             }
             constraints.audio.optional.push(
                 { sourceId: options.micDeviceId },
-                { echoCancellation: !disableAP },
-                { googEchoCancellation: !disableAP },
-                { googAutoGainControl: !disableAP },
-                { googNoiseSuppression: !disableAP },
-                { googHighpassFilter: !disableAP },
-                { googNoiseSuppression2: !disableAP },
-                { googEchoCancellation2: !disableAP },
-                { googAutoGainControl2: !disableAP }
+                { echoCancellation: false },
+                { googEchoCancellation: false },
+                { googAutoGainControl: false },
+                { googNoiseSuppression: false },
+                { googHighpassFilter: false },
+                { googNoiseSuppression2: false },
+                { googEchoCancellation2: false },
+                { googAutoGainControl2: false }
             );
         }
     } else {
