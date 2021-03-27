@@ -257,14 +257,14 @@ function getConstraints(um, options = {}) {
 
             // if it is good enough for hangouts...
             constraints.audio.optional.push(
-                { echoCancellation: false },//!disableAEC && !disableAP
-                { googEchoCancellation: false}, // !disableAEC && !disableAP
-                { googAutoGainControl: false}, //!disableAGC && !disableAP
-                { googNoiseSuppression: false},//!disableNS && !disableAP
-                { googHighpassFilter: false},//!disableHPF && !disableAP
-                { googNoiseSuppression2: false},//!disableNS && !disableAP
-                { googEchoCancellation2: false},//!disableAEC && !disableAP
-                { googAutoGainControl2: false}//!disableAGC && !disableAP
+                { echoCancellation: !disableAP },
+                { googEchoCancellation: !disableAP },
+                { googAutoGainControl: !disableAP },
+                { googNoiseSuppression: !disableAP },
+                { googHighpassFilter: !disableAP },
+                { googNoiseSuppression2: !disableAP },
+                { googEchoCancellation2: !disableAP },
+                { googAutoGainControl2: !disableAP }
             );
         }
     }
@@ -415,9 +415,9 @@ function newGetConstraints(um = [], options = {}) {
         if (browser.isFirefox() || browser.isWebKitBased()) {
             constraints.audio = {
                 deviceId: options.micDeviceId,
-                autoGainControl: false, //!disableAGC && !disableAP
-                echoCancellation: false, //!disableAEC && !disableAP
-                noiseSuppression: false //!disableNS && !disableAP
+                autoGainControl: !disableAP,
+                echoCancellation: !disableAP,
+                noiseSuppression: !disableAP
             };
         } else {
             // NOTE(brian): the new-style ('advanced' instead of 'optional')
@@ -431,14 +431,14 @@ function newGetConstraints(um = [], options = {}) {
             }
             constraints.audio.optional.push(
                 { sourceId: options.micDeviceId },
-                { echoCancellation: false},//!disableAEC && !disableAP
-                { googEchoCancellation: false},//!disableAEC && !disableAP
-                { googAutoGainControl: false},//!disableAGC && !disableAP
-                { googNoiseSuppression: false},//!disableNS && !disableAP
-                { googHighpassFilter: false},//!disableHPF && !disableAP
-                { googNoiseSuppression2: false},//!disableNS && !disableAP
-                { googEchoCancellation2: false},//!disableAEC && !disableAP
-                { googAutoGainControl2: false},//!disableAGC && !disableAP
+                { echoCancellation: !disableAP },
+                { googEchoCancellation: !disableAP },
+                { googAutoGainControl: !disableAP },
+                { googNoiseSuppression: !disableAP },
+                { googHighpassFilter: !disableAP },
+                { googNoiseSuppression2: !disableAP },
+                { googEchoCancellation2: !disableAP },
+                { googAutoGainControl2: !disableAP}
             );
         }
     } else {
