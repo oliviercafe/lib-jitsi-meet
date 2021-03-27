@@ -987,6 +987,16 @@ export default class ChatRoom extends Listenable {
                 actorNick = actorSelect.attr('nick');
             }
 
+            let reason;
+            const reasonSelect
+                = $(pres).find(
+                '>x[xmlns="http://jabber.org/protocol/muc#user"]'
+                + '>item>reason');
+
+            if (reasonSelect.length) {
+                reason = reasonSelect.text();
+            }
+
             // we first fire the kicked so we can show the participant
             // who kicked, before notifying that participant left
             // we fire kicked for us and for any participant kicked
@@ -994,7 +1004,8 @@ export default class ChatRoom extends Listenable {
                 XMPPEvents.KICKED,
                 isSelfPresence,
                 actorNick,
-                Strophe.getResourceFromJid(from));
+                Strophe.getResourceFromJid(from),
+                reason);
         }
 
         if (isSelfPresence) {
@@ -1201,14 +1212,15 @@ export default class ChatRoom extends Listenable {
     /**
      *
      * @param jid
+     * @param reason
      */
-    kick(jid) {
+    kick(jid, reason = 'You have been kicked.') {
         const kickIQ = $iq({ to: this.roomjid,
             type: 'set' })
             .c('query', { xmlns: 'http://jabber.org/protocol/muc#admin' })
             .c('item', { nick: Strophe.getResourceFromJid(jid),
                 role: 'none' })
-            .c('reason').t('You have been kicked.').up().up().up();
+            .c('reason').t(reason).up().up().up();
 
         this.connection.sendIQ(
             kickIQ,
@@ -1589,7 +1601,7 @@ export default class ChatRoom extends Listenable {
             return null;
         }
         const data = {
-            muted: false, // unmuted by default
+            muted: true, // muted by default
             videoType: undefined // no video type by default
         };
         let mutedNode = null;
@@ -1613,7 +1625,9 @@ export default class ChatRoom extends Listenable {
             return null;
         }
 
-        data.muted = mutedNode.length > 0 && mutedNode[0].value === 'true';
+        if (mutedNode.length > 0) {
+            data.muted = mutedNode[0].value === 'true';
+        }
 
         return data;
     }
