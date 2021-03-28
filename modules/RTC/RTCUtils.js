@@ -64,6 +64,16 @@ const DEFAULT_CONSTRAINTS = {
             max: 720,
             min: 240
         }
+    },
+    audio: {
+        ehoCancellation: true,
+        googEchoCancellation: true,
+        googAutoGainControl: true,
+        googNoiseSuppression: true,
+        gogHighpassFilter: true,
+        googNoiseSuppression2: true,
+        googEchoCancellation2: true,
+        googAutoGainControl2: false
     }
 };
 
