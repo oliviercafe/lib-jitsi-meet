@@ -452,7 +452,11 @@ function newGetConstraints(um = [], options = {}) {
             );
         }
     } else {
-        constraints.audio = false;
+        constraints.audio = {
+                deviceId: options.micDeviceId,
+                autoGainControl: !disableAGC && !disableAP,
+                echoCancellation: !disableAEC && !disableAP,
+                noiseSuppression: !disableNS && !disableAP};
     }
 
     if (um.indexOf('desktop') >= 0) {
