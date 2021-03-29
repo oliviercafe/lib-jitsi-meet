@@ -417,7 +417,7 @@ function newGetConstraints(um = [], options = {}) {
     }
 
     if (um.indexOf('audio') >= 0) {
-        if (!constraints.audio || typeof constraints.audio === 'boolean') {
+        if (!constraints.audio) {
             constraints.audio = {};
         }
 
