@@ -66,14 +66,16 @@ const DEFAULT_CONSTRAINTS = {
         }
     },
     audio: {
-        ehoCancellation: true,
-        googEchoCancellation: true,
-        googAutoGainControl: true,
-        googNoiseSuppression: true,
-        gogHighpassFilter: true,
-        googNoiseSuppression2: true,
-        googEchoCancellation2: true,
-        googAutoGainControl2: false
+        optional: {
+            ehoCancellation: true,
+            googEchoCancellation: true,
+            googAutoGainControl: true,
+            googNoiseSuppression: true,
+            gogHighpassFilter: true,
+            googNoiseSuppression2: true,
+            googEchoCancellation2: true,
+            googAutoGainControl2: false
+        }
     }
 };
 
