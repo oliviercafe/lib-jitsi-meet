@@ -140,9 +140,10 @@ export default class BrowserCapabilities extends BrowserDetection {
      */
     supportsCodecPreferences() {
         return this.usesUnifiedPlan()
-            && typeof window.RTCRtpTransceiver !== 'undefined'
-            && Object.keys(window.RTCRtpTransceiver.prototype).indexOf('setCodecPreferences') > -1
-            && Object.keys(RTCRtpSender.prototype).indexOf('getCapabilities') > -1
+            && Boolean(window.RTCRtpTransceiver
+            && window.RTCRtpTransceiver.setCodecPreferences
+            && window.RTCRtpReceiver
+            && window.RTCRtpReceiver.getCapabilities)
 
             // this is not working on Safari because of the following bug
             // https://bugs.webkit.org/show_bug.cgi?id=215567
@@ -182,7 +183,11 @@ export default class BrowserCapabilities extends BrowserDetection {
      */
     supportsReceiverStats() {
         return typeof window.RTCRtpReceiver !== 'undefined'
-            && Object.keys(RTCRtpReceiver.prototype).indexOf('getSynchronizationSources') > -1;
+            && Object.keys(RTCRtpReceiver.prototype).indexOf('getSynchronizationSources') > -1
+
+            // Disable this on Safari because it is reporting 0.000001 as the audio levels for all
+            // remote audio tracks.
+            && !this.isWebKitBased();
     }
 
     /**

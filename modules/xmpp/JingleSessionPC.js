@@ -3,6 +3,7 @@
 import { getLogger } from 'jitsi-meet-logger';
 import { $iq, Strophe } from 'strophe.js';
 
+import * as CodecMimeType from '../../service/RTC/CodecMimeType';
 import {
     ICE_DURATION,
     ICE_STATE_CHANGED
@@ -328,6 +329,7 @@ export default class JingleSessionPC extends JingleSession {
         pcOptions.enableInsertableStreams = options.enableInsertableStreams;
         pcOptions.videoQuality = options.videoQuality;
         pcOptions.forceTurnRelay = options.forceTurnRelay;
+        pcOptions.audioQuality = options.audioQuality;
 
         if (this.isP2P) {
             // simulcast needs to be disabled for P2P (121) calls
@@ -341,7 +343,8 @@ export default class JingleSessionPC extends JingleSession {
             // H264 does not support simulcast, so it needs to be disabled.
             pcOptions.disableSimulcast
                 = options.disableSimulcast
-                    || (options.preferH264 && !options.disableH264);
+                    || (options.preferH264 && !options.disableH264)
+                    || (options.videoQuality && options.videoQuality.preferredCodec === CodecMimeType.H264);
 
             // disable simulcast for screenshare and set the max bitrate to
             // 500Kbps if the testing flag is present in config.js.

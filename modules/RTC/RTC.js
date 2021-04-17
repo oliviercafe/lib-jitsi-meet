@@ -181,6 +181,9 @@ export default class RTC extends Listenable {
         this._updateAudioOutputForAudioTracks
             = this._updateAudioOutputForAudioTracks.bind(this);
 
+        // The default video type assumed by the bridge.
+        this._videoType = VideoType.CAMERA;
+
         // Switch audio output device on all remote audio tracks. Local audio
         // tracks handle this event by themselves.
         if (RTCUtils.isDeviceChangeAvailable('output')) {
@@ -286,6 +289,13 @@ export default class RTC extends Listenable {
                 }
             }
 
+            try {
+                this._channel.sendVideoTypeMessage(this._videoType);
+            } catch (error) {
+                GlobalOnErrorHandler.callErrorHandler(error);
+                logger.error(`Cannot send VideoTypeMessage ${this._videoType}`, error);
+            }
+
             this.removeListener(RTCEvents.DATA_CHANNEL_OPEN, this._channelOpenListener);
             this._channelOpenListener = null;
         };
@@ -379,6 +389,23 @@ export default class RTC extends Listenable {
 
         if (this._channel && this._channel.isOpen()) {
             this._channel.sendReceiverVideoConstraintMessage(maxFrameHeight);
+        }
+    }
+
+    /**
+     * Sets the video type and availability for the local video source.
+     *
+     * @param {string} videoType 'camera' for camera, 'desktop' for screenshare and
+     * 'none' for when local video source is muted or removed from the peerconnection.
+     * @returns {void}
+     */
+    setVideoType(videoType) {
+        if (this._videoType !== videoType) {
+            this._videoType = videoType;
+
+            if (this._channel && this._channel.isOpen()) {
+                this._channel.sendVideoTypeMessage(videoType);
+            }
         }
     }
 
@@ -845,8 +872,6 @@ export default class RTC extends Listenable {
         track.setAudioLevel(audioLevel, tpc);
     }
 
-    /* eslint-enable max-params */
-
     /**
      * Sends message via the bridge channel.
      * @param {string} to The id of the endpoint that should receive the
@@ -860,6 +885,17 @@ export default class RTC extends Listenable {
             this._channel.sendMessage(to, payload);
         } else {
             throw new Error('Channel support is disabled!');
+        }
+    }
+
+    /**
+     * Sends the local stats via the bridge channel.
+     * @param {Object} payload The payload of the message.
+     * @throws NetworkError/InvalidStateError/Error if the operation fails or if there is no data channel created.
+     */
+    sendEndpointStatsMessage(payload) {
+        if (this._channel && this._channel.isOpen()) {
+            this._channel.sendEndpointStatsMessage(payload);
         }
     }
 

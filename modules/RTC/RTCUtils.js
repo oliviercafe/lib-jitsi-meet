@@ -105,6 +105,9 @@ let disableAGC = true;
 // Disables Highpass Filter
 let disableHPF = true;
 
+// Enables stereo.
+let stereo = null;
+
 const featureDetectionAudioEl = document.createElement('audio');
 const isAudioOutputDeviceChangeAvailable
     = typeof featureDetectionAudioEl.setSinkId !== 'undefined';
@@ -423,35 +426,15 @@ function newGetConstraints(um = [], options = {}) {
             constraints.audio = {};
         }
 
-        // Use the standard audio constraints on non-chromium browsers.
-        if (browser.isFirefox() || browser.isWebKitBased()) {
-            constraints.audio = {
-                deviceId: options.micDeviceId,
-                autoGainControl: !disableAGC && !disableAP,
-                echoCancellation: !disableAEC && !disableAP,
-                noiseSuppression: !disableNS && !disableAP
-            };
-        } else {
-            // NOTE(brian): the new-style ('advanced' instead of 'optional')
-            // doesn't seem to carry through the googXXX constraints
-            // Changing back to 'optional' here (even with video using
-            // the 'advanced' style) allows them to be passed through
-            // but also requires the device id to capture to be set in optional
-            // as sourceId otherwise the constraints are considered malformed.
-            if (!constraints.audio.optional) {
-                constraints.audio.optional = [];
-            }
-            constraints.audio.optional.push(
-                { sourceId: options.micDeviceId },
-                { echoCancellation: !disableAEC && !disableAP },
-                { googEchoCancellation: !disableAEC && !disableAP },
-                { googAutoGainControl: !disableAGC && !disableAP },
-                { googNoiseSuppression: !disableNS && !disableAP },
-                { googHighpassFilter: !disableHPF && !disableAP },
-                { googNoiseSuppression2: !disableNS && !disableAP },
-                { googEchoCancellation2: !disableAEC && !disableAP },
-                { googAutoGainControl2: !disableAGC && !disableAP }
-            );
+        constraints.audio = {
+            autoGainControl: !disableAGC && !disableAP,
+            deviceId: options.micDeviceId,
+            echoCancellation: !disableAEC && !disableAP,
+            noiseSuppression: !disableNS && !disableAP
+        };
+
+        if (stereo) {
+            Object.assign(constraints.audio, { channelCount: 2 });
         }
     } else {
         constraints.audio = {
@@ -791,6 +774,10 @@ class RTCUtils extends Listenable {
         if (typeof options.disableHPF === 'boolean') {
             disableHPF = options.disableHPF;
             logger.info(`Disable HPF: ${disableHPF}`);
+        }
+        if (typeof options.audioQuality?.stereo === 'boolean') {
+            stereo = options.audioQuality.stereo;
+            logger.info(`Stereo: ${stereo}`);
         }
 
         window.clearInterval(availableDevicesPollTimer);
