@@ -9,6 +9,7 @@ import {
     ICE_STATE_CHANGED
 } from '../../service/statistics/AnalyticsEvents';
 import XMPPEvents from '../../service/xmpp/XMPPEvents';
+import { SS_DEFAULT_FRAME_RATE } from '../RTC/RTCUtils';
 import Statistics from '../statistics/statistics';
 import AsyncQueue from '../util/AsyncQueue';
 import GlobalOnErrorHandler from '../util/GlobalOnErrorHandler';
@@ -38,6 +39,12 @@ const IQ_TIMEOUT = 10000;
  * is enabled in TraceablePeerConnection.
  */
 const DEFAULT_MAX_STATS = 300;
+
+/**
+ * The time duration for which the client keeps gathering ICE candidates to be sent out in a single IQ.
+ * @type {number} timeout in ms.
+ */
+const ICE_CAND_GATHERING_TIMEOUT = 150;
 
 /**
  * @typedef {Object} JingleSessionPCOptions
@@ -346,20 +353,14 @@ export default class JingleSessionPC extends JingleSession {
                     || (options.preferH264 && !options.disableH264)
                     || (options.videoQuality && options.videoQuality.preferredCodec === CodecMimeType.H264);
 
-            // disable simulcast for screenshare and set the max bitrate to
-            // 500Kbps if the testing flag is present in config.js.
-            if (options.testing
-                && options.testing.capScreenshareBitrate
-                && typeof options.testing.capScreenshareBitrate === 'number') {
-                pcOptions.capScreenshareBitrate
-                    = Math.random()
-                    < options.testing.capScreenshareBitrate;
+            // Disable simulcast for low fps screenshare and enable it for high fps screenshare.
+            // testing.capScreenshareBitrate config.js setting has now been deprecated.
+            pcOptions.capScreenshareBitrate = !(typeof options.desktopSharingFrameRate?.max === 'number'
+                && options.desktopSharingFrameRate?.max > SS_DEFAULT_FRAME_RATE);
 
-                // add the capScreenshareBitrate to the permanent properties so
-                // that it's included with every event that we send to the
-                // analytics backend.
-                Statistics.analytics.addPermanentProperties({ capScreenshareBitrate: pcOptions.capScreenshareBitrate });
-            }
+            // add the capScreenshareBitrate to the permanent properties so that it's included with every event that we
+            // send to the analytics backend.
+            Statistics.analytics.addPermanentProperties({ capScreenshareBitrate: pcOptions.capScreenshareBitrate });
         }
 
         if (options.startSilent) {
@@ -603,9 +604,7 @@ export default class JingleSessionPC extends JingleSession {
         const localSDP = new SDP(this.peerconnection.localDescription.sdp);
 
         if (candidate && candidate.candidate.length && !this.lasticecandidate) {
-            const ice
-                = SDPUtil.iceparams(
-                    localSDP.media[candidate.sdpMLineIndex], localSDP.session);
+            const ice = SDPUtil.iceparams(localSDP.media[candidate.sdpMLineIndex], localSDP.session);
             const jcand = SDPUtil.candidateToJingle(candidate.candidate);
 
             if (!(ice && jcand)) {
@@ -620,14 +619,13 @@ export default class JingleSessionPC extends JingleSession {
 
             if (this.usedrip) {
                 if (this.dripContainer.length === 0) {
-                    // start 20ms callout
                     setTimeout(() => {
                         if (this.dripContainer.length === 0) {
                             return;
                         }
                         this.sendIceCandidates(this.dripContainer);
                         this.dripContainer = [];
-                    }, 20);
+                    }, ICE_CAND_GATHERING_TIMEOUT);
                 }
                 this.dripContainer.push(candidate);
             } else {
